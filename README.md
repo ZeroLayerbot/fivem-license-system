@@ -1,283 +1,299 @@
-# FiveM License System
+````markdown
+# 🎮 FiveM License System
 
-Ein professionelles Lizenzverwaltungssystem für FiveM Server mit modernem Liquid Glass Design und erweiterten Admin-Funktionen.
+Ein professionelles Lizenzverwaltungssystem für FiveM-Server – mit modernem Liquid-Glass-Design, reaktiver Oberfläche und erweiterten Admin-Funktionen.
 
-## 🚀 Installation und Setup
+---
 
-### Voraussetzungen
+## 🚀 Installation & Setup
 
-Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen auf Ihrem System installiert sind:
+### ✅ Voraussetzungen
 
--   **Node.js** (Version 18 oder höher)
--   **MySQL Server** (oder eine kompatible Datenbank wie MariaDB)
--   **npm** oder **yarn** (als Paketmanager)
+- **Node.js** v18+
+- **MySQL** oder MariaDB
+- **npm** oder **yarn**
 
-### 1. Projekt klonen/herunterladen
+---
 
-Erstellen Sie zuerst einen Ordner für Ihr Projekt und kopieren Sie alle Projektdateien dorthin. Wenn Sie Git verwenden, können Sie das Repository klonen:
+### 📁 Projekt klonen
 
-\`\`\`bash
-# Projekt-Ordner erstellen (falls noch nicht geschehen)
-mkdir fivem-license-system
-cd fivem-license-system
+```bash
+mkdir fivem-license-system && cd fivem-license-system
+# Falls mit Git:
+# git clone https://github.com/ZeroLayerbot/fivem-license-system.git .
+````
 
-# Dateien in den Ordner kopieren oder Repository klonen
-# Beispiel: git clone https://github.com/ZeroLayerbot/fivem-license-system.git .
-\`\`\`
+---
 
-### 2. Abhängigkeiten installieren
+### 📦 Abhängigkeiten installieren
 
-Navigieren Sie im Terminal in das Projektverzeichnis und installieren Sie alle erforderlichen Node.js-Abhängigkeiten:
-
-\`\`\`bash
+```bash
 npm install --legacy-peer-deps
 # oder
 yarn install
-\`\`\`
+```
 
-### 3. Datenbank einrichten
+---
 
-Das System verwendet MySQL als Datenbank. Führen Sie die folgenden Schritte aus, um Ihre Datenbank vorzubereiten:
+### 🛢️ Datenbank einrichten
 
-1.  **MySQL Server starten:** Stellen Sie sicher, dass Ihr MySQL-Server läuft und auf dem Standardport (3306) erreichbar ist.
-2.  **Datenbank und Benutzer erstellen:** Verbinden Sie sich als Root-Benutzer mit Ihrem MySQL-Server und führen Sie die folgenden SQL-Befehle aus, um die Datenbank `lic` und einen dedizierten Benutzer `lic` mit dem Passwort `YOURPASSWORD` zu erstellen. Sie können das Passwort natürlich anpassen.
+1. MySQL starten und mit Root verbinden
+2. SQL-Befehle ausführen:
 
-    \`\`\`sql
-    -- Verbinden Sie sich als Root-Benutzer mit MySQL
-    CREATE DATABASE lic CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-    CREATE USER 'lic'@'localhost' IDENTIFIED BY 'YOURPASSWORD';
-    GRANT ALL PRIVILEGES ON lic.* TO 'lic'@'localhost';
-    FLUSH PRIVILEGES;
-    \`\`\`
+```sql
+CREATE DATABASE lic CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'lic'@'localhost' IDENTIFIED BY 'YOURPASSWORD';
+GRANT ALL PRIVILEGES ON lic.* TO 'lic'@'localhost';
+FLUSH PRIVILEGES;
+```
 
-3.  **Tabellen erstellen und Seed-Daten einfügen:** Die notwendigen SQL-Skripte (`01-create-tables.sql`, `02-seed-data.sql`, `03-update-script-licenses.sql`) werden automatisch über die Weboberfläche ausgeführt, sobald Sie die Anwendung starten und die entsprechenden Schritte in der Benutzeroberfläche befolgen. Alternativ können Sie diese Skripte auch manuell über ein MySQL-Client-Tool ausführen.
+3. SQL-Skripte (`01-create-tables.sql`, `02-seed-data.sql`, `03-update-script-licenses.sql`) über die Weboberfläche oder manuell ausführen.
 
-### 4. Umgebungsvariablen (Optional, aber empfohlen)
+---
 
-Erstellen Sie eine `.env.local`-Datei im Hauptverzeichnis Ihres Projekts. Diese Datei wird von Next.js automatisch geladen und ist ideal für sensible Daten wie den JWT-Secret.
+### ⚙️ Umgebungsvariablen
 
-\`\`\`env
-JWT_SECRET=ihr-geheimer-jwt-schluessel-hier # Ersetzen Sie dies durch einen langen, zufälligen String (in putty: `openssl rand -hex 64`)
+Erstelle `.env.local`:
+
+```env
+JWT_SECRET=openssl rand -hex 64 # <- ersetzen!
 NODE_ENV=development
-\`\`\`
+```
 
-### 5. Entwicklungsserver starten
+---
 
-Um die Anwendung im Entwicklungsmodus zu starten, führen Sie den folgenden Befehl aus:
+### 🧪 Entwicklungsmodus starten
 
-\`\`\`bash
+```bash
 npm run dev
 # oder
 yarn dev
-\`\`\`
+```
 
-Die Anwendung ist nun unter `http://localhost:3000` erreichbar.
+📍 Webinterface: [http://localhost:3000](http://localhost:3000)
 
-### 6. Produktionsserver starten
+---
 
-Für den Einsatz in einer Produktionsumgebung müssen Sie die Anwendung zuerst bauen und dann starten:
+### 📦 Produktionsmodus starten
 
-\`\`\`bash
-# Projekt für Produktion bauen
-npm run build
+```bash
+npm run build && npm start
+```
 
-# Produktionsserver starten
-npm start
-\`\`\`
+---
 
-## 📊 Datenbank-Setup über die Weboberfläche
+## 📊 Datenbank-Setup über Webinterface
 
-Nachdem Sie den Entwicklungsserver gestartet haben (`npm run dev`), können Sie die Datenbank-Skripte über die integrierte Ausführung in der Anwendung ausführen:
+1. Starte den Dev-Server
+2. Öffne `http://localhost:3000`
+3. Führe Schritt für Schritt aus:
 
-1.  Öffnen Sie Ihren Browser und navigieren Sie zu `http://localhost:3000`.
-2.  Folgen Sie den Anweisungen in der Anwendung, um die SQL-Skripte auszuführen.
-3.  Führen Sie zuerst `01-create-tables.sql` aus, um die grundlegenden Tabellen zu erstellen.
-4.  Führen Sie dann `02-seed-data.sql` aus, um Beispieldaten (einschließlich Admin- und Testbenutzer) einzufügen.
-5.  Führen Sie abschließend `03-update-script-licenses.sql` aus, um die Datenbank für Script-Lizenzen zu aktualisieren.
+   * `01-create-tables.sql`
+   * `02-seed-data.sql`
+   * `03-update-script-licenses.sql`
+
+---
 
 ## 👤 Standard-Anmeldedaten
 
-Nach dem Ausführen der Seed-Daten (`02-seed-data.sql`):
+**Admin:**
 
-**Admin-Account:**
--   Benutzername: `admin`
--   Passwort: `admin123`
+* Benutzer: `admin`
+* Passwort: `admin123`
 
 **Test-User:**
--   Benutzername: `testuser`
--   Passwort: `user123`
+
+* Benutzer: `testuser`
+* Passwort: `user123`
+
+---
 
 ## 🎨 Features
 
-### ✨ Design
--   **Liquid Glass Design** mit Transparenz und Unschärfe-Effekten
--   **Dark/Light Mode** Toggle
--   **Responsive Design** für alle Geräte
--   **Smooth Animationen** mit Framer Motion (ohne störende Hover-Verschwommenheit)
+### ✨ UI
+
+* Liquid Glass Design (Blur, Transparenz)
+* Light/Dark Mode
+* Responsive & animiert (Framer Motion)
 
 ### 🔐 Authentifizierung
--   Benutzerregistrierung und -anmeldung
--   JWT-basierte Authentifizierung
--   Rollenbasierte Zugriffskontrolle (User/Admin)
+
+* Registrierung & Login
+* JWT Token
+* Rollen (Admin/User)
 
 ### 📋 Lizenzverwaltung
--   **User:** Eigene Lizenzen anzeigen und verwalten
--   **Admin:** Alle Lizenzen verwalten, neue erstellen, **bestehende Lizenzen bearbeiten und löschen, sowie deren Aktivitätsstatus umschalten.**
--   Automatische Lizenzschlüssel-Generierung
--   Server-Status-Tracking
 
-### 👥 Benutzerverwaltung (Admin-Panel)
--   **Admin:** Alle registrierten Benutzer anzeigen
--   **Admin:** Neue Benutzer erstellen
--   **Admin:** Bestehende Benutzer bearbeiten (Benutzername, E-Mail, Rolle)
--   **Admin:** Benutzer temporär deaktivieren/aktivieren
--   **Admin:** Benutzer vollständig löschen (inkl. aller zugehörigen Lizenzen)
+* Eigene & globale Lizenzen einsehen
+* Admin kann Lizenzen erstellen, bearbeiten, löschen
+* Lizenzstatus umschaltbar
+
+### 👥 Benutzerverwaltung
+
+* Benutzer anzeigen, bearbeiten, erstellen
+* Accounts deaktivieren oder löschen
 
 ### 📈 Statistiken
--   Gesamtanzahl Benutzer, Lizenzen, Server
--   Online-Server und aktive Spieler
--   Aktivitätsverlauf
--   Admin-Dashboard mit erweiterten Statistiken
+
+* Übersicht über User, Server, Lizenzen
+* Realtime-Spielerstatus
+* Admin-Dashboard
+
+---
 
 ## 🗂️ Projektstruktur
 
-\`\`\`
+```plaintext
 fivem-license-system/
-├── app/                    # Next.js App Router
-│   ├── api/               # API Routes (inkl. Admin- und Lizenz-APIs)
-│   ├── dashboard/         # Dashboard Seite
-│   ├── login/            # Login Seite
-│   ├── licenses/         # Lizenzverwaltungsseite
-│   ├── admin/            # Admin-Panel Seite
-│   └── register/         # Registrierung
-├── components/           # React Komponenten
-│   ├── ui/              # shadcn/ui Komponenten
-│   ├── glass-card.tsx   # Liquid Glass Karte (ohne Hover-Effekt)
-│   └── navigation.tsx   # Navigation
-├── contexts/            # React Contexts (Auth, Theme)
-├── lib/                # Utility Funktionen (Datenbank, Auth, Utils)
-├── scripts/            # SQL Skripte für Datenbank-Setup
-└── public/             # Statische Dateien
-\`\`\`
+├── app/
+│   ├── api/
+│   ├── dashboard/
+│   ├── login/
+│   ├── licenses/
+│   ├── admin/
+│   └── register/
+├── components/
+│   ├── ui/
+│   ├── glass-card.tsx
+│   └── navigation.tsx
+├── contexts/
+├── lib/
+├── scripts/
+└── public/
+```
+
+---
 
 ## 🔧 Konfiguration
 
-### Datenbankverbindung
+### 📁 `lib/database.ts`
 
-Die Datenbankverbindung ist in `lib/database.ts` konfiguriert. Sie können diese Datei bearbeiten, um Ihre Datenbank-Zugangsdaten anzupassen:
-
-\`\`\`typescript
-// lib/database.ts
+```ts
 const dbConfig = {
-  host: "127.0.0.1", // Ihre Datenbank-Host-IP oder Domain (niemals localhost verwenden)
-  port: 3306,        // Ihr Datenbank-Port
-  user: "lic",       // Ihr Datenbank-Benutzername
-  password: "YOURPASSWORD", // Ihr Datenbank-Passwort
-  database: "lic",   // Ihr Datenbank-Name
+  host: "127.0.0.1",
+  port: 3306,
+  user: "lic",
+  password: "YOURPASSWORD",
+  database: "lic",
   charset: "utf8mb4",
-}
-\`\`\`
+};
+```
 
-### JWT-Konfiguration
+### 🔑 JWT
 
-Der JWT-Secret wird für die Authentifizierung verwendet. Es wird dringend empfohlen, diesen in der `.env.local`-Datei zu setzen, wie unter Punkt 4 beschrieben. Wenn nicht gesetzt, wird ein Standardwert verwendet, der **nicht** für die Produktion geeignet ist.
+Setze den `JWT_SECRET` in `.env.local`. Ein Fallback-Wert wird zwar verwendet, ist aber **nicht** für Produktion geeignet.
+
+---
 
 ## 📝 API Endpoints
 
-Hier ist eine Übersicht der wichtigsten API-Endpunkte:
+### 🔐 Auth
 
--   `POST /api/auth/login` - Benutzer anmelden
--   `POST /api/auth/register` - Benutzer registrieren
--   `GET /api/auth/me` - Aktueller Benutzer abrufen
+* `POST /api/auth/login`
+* `POST /api/auth/register`
+* `GET /api/auth/me`
 
--   `GET /api/licenses` - Lizenzen abrufen (alle für Admin, eigene für User)
--   `POST /api/licenses` - Neue Lizenz erstellen
--   `PATCH /api/licenses/[id]` - Lizenz aktualisieren (Admin oder Lizenzinhaber)
--   `DELETE /api/licenses/[id]` - Lizenz löschen (nur Admin)
+### 📋 Lizenzen
 
--   `GET /api/admin/users` - Alle Benutzer abrufen (nur Admin)
--   `POST /api/admin/users` - Neuen Benutzer erstellen (nur Admin)
--   `PATCH /api/admin/users/[id]` - Benutzer aktualisieren (nur Admin)
--   `DELETE /api/admin/users/[id]` - Benutzer löschen (nur Admin)
+* `GET /api/licenses`
+* `POST /api/licenses`
+* `PATCH /api/licenses/[id]`
+* `DELETE /api/licenses/[id]`
 
--   `GET /api/stats` - Systemstatistiken abrufen
+### 👤 Benutzer
 
--   `POST /api/fivem/heartbeat` - FiveM Server Heartbeat senden
--   `POST /api/fivem/validate` - FiveM Server Lizenz validieren (Legacy)
--   `POST /api/fivem/validate-script` - FiveM Script-Lizenz validieren
+* `GET /api/admin/users`
+* `POST /api/admin/users`
+* `PATCH /api/admin/users/[id]`
+* `DELETE /api/admin/users/[id]`
+
+### 🔄 FiveM
+
+* `POST /api/fivem/heartbeat`
+* `POST /api/fivem/validate`
+* `POST /api/fivem/validate-script`
+
+---
 
 ## 🚀 Deployment
 
 ### Vercel (Empfohlen)
 
-1.  Pushen Sie Ihr Projekt zu einem Git-Repository (z.B. GitHub, GitLab, Bitbucket).
-2.  Verbinden Sie Ihr Repository mit Vercel.
-3.  Konfigurieren Sie Ihre Umgebungsvariablen (insbesondere `JWT_SECRET`) in den Vercel-Projekteinstellungen.
-4.  Vercel wird das Projekt automatisch bauen und deployen.
+1. Repository pushen
+2. Mit Vercel verbinden
+3. `.env.local`-Werte in Vercel setzen
+4. Vercel erledigt Build + Deployment automatisch
 
-### Eigener Server
+### Eigenes Hosting
 
-1.  Bauen Sie das Projekt für die Produktion: `npm run build`
-2.  Kopieren Sie die generierten Dateien (`.next`-Ordner, `node_modules`, `package.json`, `public`-Ordner und Ihre `.env.local`-Datei) auf Ihren Server.
-3.  Führen Sie auf dem Server `npm install --legacy-peer-deps` aus, um nur die benötigten Abhängigkeiten zu installieren.
-4.  Starten Sie den Produktionsserver mit `npm start`.
-
-## 🛠️ Entwicklung
-
-### Neue Features hinzufügen
-
-1.  Erstellen Sie neue API-Routen in `app/api/`.
-2.  Entwickeln Sie wiederverwendbare React-Komponenten in `components/`.
-3.  Fügen Sie neue Seiten in `app/` hinzu.
-4.  Dokumentieren Sie alle Datenbankänderungen in neuen SQL-Skripten im Ordner `scripts/`.
-
-### Styling
-
-Das Projekt verwendet:
--   **Tailwind CSS** für schnelles und flexibles Styling.
--   **shadcn/ui** für vorgefertigte, anpassbare UI-Komponenten.
--   **Framer Motion** für flüssige Animationen.
--   **Custom CSS** für die Liquid Glass Effekte.
-
-## 🐛 Troubleshooting
-
-### Häufige Probleme
-
-1.  **Datenbankverbindung fehlgeschlagen:**
-    -   Stellen Sie sicher, dass Ihr MySQL-Server läuft.
-    -   Überprüfen Sie die Anmeldedaten in `lib/database.ts`.
-    -   Prüfen Sie Firewall-Einstellungen, die den Zugriff auf den MySQL-Port blockieren könnten.
-
-2.  **JWT-Fehler (z.B. "Ungültiger Token"):**
-    -   Stellen Sie sicher, dass `JWT_SECRET` in Ihrer `.env.local`-Datei gesetzt ist und dass es sich um einen langen, komplexen String handelt.
-    -   Leeren Sie den Browser-Cache oder verwenden Sie den Inkognito-Modus.
-
-3.  **Build-Fehler:**
-    -   Löschen Sie den `node_modules`-Ordner und die `package-lock.json` (oder `yarn.lock`), und führen Sie dann `npm install --legacy-peer-depsl` erneut aus.
-    -   Überprüfen Sie, ob Ihre Node.js-Version mindestens 18 ist.
-
-### Logs
-
-Der Entwicklungsserver zeigt alle Fehler in der Konsole an. Für die Produktion können Sie `console.log`-Statements für Debugging-Zwecke hinzufügen oder ein dediziertes Logging-System einrichten.
-
-## 📞 Support
-
-Bei Problemen oder Fragen:
-
-1.  Lesen Sie diese `README.md`-Datei sorgfältig durch.
-2.  Überprüfen Sie die Server-Logs und die Browser-Konsole auf Fehlermeldungen.
-3.  Testen Sie die Datenbankverbindung und die API-Endpunkte manuell (z.B. mit Postman oder cURL).
-4.  Wenn das Problem weiterhin besteht, erstellen Sie ein Issue in Ihrem GitHub-Repository (falls verfügbar) oder kontaktieren Sie den Support.
-
-## 🔄 Updates
-
-Um das System auf dem neuesten Stand zu halten:
-
-1.  Laden Sie die neuesten Projektdateien herunter oder pullen Sie die Änderungen aus Ihrem Repository.
-2.  Führen Sie `npm install --legacy-peer-deps` aus, falls neue Abhängigkeiten hinzugefügt wurden.
-3.  Führen Sie alle neuen Datenbankmigrationen aus (z.B. neue SQL-Skripte im `scripts/`-Ordner).
-4.  Starten Sie den Server neu.
+```bash
+npm run build &&
+npm install --legacy-peer-deps &&
+npm start
+```
 
 ---
 
-**Viel Erfolg mit Ihrem FiveM License System! 🎮**
+## 🛠️ Entwicklung
+
+### Neue Features
+
+* Neue APIs in `app/api/`
+* React-Komponenten in `components/`
+* Neue Seiten in `app/`
+* SQL-Skripte im `scripts/`-Ordner
+
+### Styling
+
+* Tailwind CSS
+* shadcn/ui
+* Framer Motion
+* Custom Liquid-Glass CSS
+
+---
+
+## 🐛 Troubleshooting
+
+### ❌ DB-Verbindung
+
+* Läuft MySQL?
+* Richtige Daten in `lib/database.ts`?
+* Firewall-Ports offen?
+
+### ❌ JWT Fehler
+
+* `.env.local` vorhanden?
+* Browser-Cache leeren
+
+### ❌ Build schlägt fehl?
+
+```bash
+rm -rf node_modules package-lock.json && npm install --legacy-peer-deps
+```
+
+* Node.js v18 prüfen!
+
+---
+
+## 📞 Support
+
+1. Lies dieses README sorgfältig!
+2. Logs prüfen (Konsole & Browser)
+3. API-Endpunkte via Postman testen
+4. Erstelle ein GitHub-Issue oder kontaktiere den Projektbetreuer
+
+---
+
+## 🔄 Updates
+
+1. Neues Repo pullen oder Dateien aktualisieren
+2. `npm install --legacy-peer-deps`
+3. Neue SQL-Skripte ausführen
+4. Server neu starten
+
+---
+
+**Viel Erfolg mit deinem FiveM License System!**
+🎯 Entwickelt für maximale Kontrolle, modernes UI & volle FiveM-Kompatibilität.
+
+
