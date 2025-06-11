@@ -16,8 +16,8 @@ Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen auf I
 
 Erstellen Sie zuerst einen Ordner für Ihr Projekt und kopieren Sie alle Projektdateien dorthin. Wenn Sie Git verwenden, können Sie das Repository klonen:
 
-# Projekt-Ordner erstellen (falls noch nicht geschehen)
 ```bash 
+# Projekt-Ordner erstellen (falls noch nicht geschehen)
 mkdir fivem-license-system
 cd fivem-license-system
 
