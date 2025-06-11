@@ -16,24 +16,24 @@ Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen auf I
 
 Erstellen Sie zuerst einen Ordner für Ihr Projekt und kopieren Sie alle Projektdateien dorthin. Wenn Sie Git verwenden, können Sie das Repository klonen:
 
-\`\`\`bash
+```bash
 # Projekt-Ordner erstellen (falls noch nicht geschehen)
 mkdir fivem-license-system
 cd fivem-license-system
 
 # Dateien in den Ordner kopieren oder Repository klonen
 # Beispiel: git clone https://github.com/ZeroLayerbot/fivem-license-system.git .
-\`\`\`
+```
 
 ### 2. Abhängigkeiten installieren
 
 Navigieren Sie im Terminal in das Projektverzeichnis und installieren Sie alle erforderlichen Node.js-Abhängigkeiten:
 
-\`\`\`bash
+```bash
 npm install --legacy-peer-deps
 # oder
 yarn install
-\`\`\`
+```
 
 ### 3. Datenbank einrichten
 
@@ -42,13 +42,13 @@ Das System verwendet MySQL als Datenbank. Führen Sie die folgenden Schritte aus
 1.  **MySQL Server starten:** Stellen Sie sicher, dass Ihr MySQL-Server läuft und auf dem Standardport (3306) erreichbar ist.
 2.  **Datenbank und Benutzer erstellen:** Verbinden Sie sich als Root-Benutzer mit Ihrem MySQL-Server und führen Sie die folgenden SQL-Befehle aus, um die Datenbank `lic` und einen dedizierten Benutzer `lic` mit dem Passwort `YOURPASSWORD` zu erstellen. Sie können das Passwort natürlich anpassen.
 
-    \`\`\`sql
+    ```sql
     -- Verbinden Sie sich als Root-Benutzer mit MySQL
     CREATE DATABASE lic CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
     CREATE USER 'lic'@'localhost' IDENTIFIED BY 'YOURPASSWORD';
     GRANT ALL PRIVILEGES ON lic.* TO 'lic'@'localhost';
     FLUSH PRIVILEGES;
-    \`\`\`
+    ```
 
 3.  **Tabellen erstellen und Seed-Daten einfügen:** Die notwendigen SQL-Skripte (`01-create-tables.sql`, `02-seed-data.sql`, `03-update-script-licenses.sql`) werden automatisch über die Weboberfläche ausgeführt, sobald Sie die Anwendung starten und die entsprechenden Schritte in der Benutzeroberfläche befolgen. Alternativ können Sie diese Skripte auch manuell über ein MySQL-Client-Tool ausführen.
 
@@ -56,20 +56,20 @@ Das System verwendet MySQL als Datenbank. Führen Sie die folgenden Schritte aus
 
 Erstellen Sie eine `.env.local`-Datei im Hauptverzeichnis Ihres Projekts. Diese Datei wird von Next.js automatisch geladen und ist ideal für sensible Daten wie den JWT-Secret.
 
-\`\`\`env
+```env
 JWT_SECRET=ihr-geheimer-jwt-schluessel-hier # Ersetzen Sie dies durch einen langen, zufälligen String (in putty: `openssl rand -hex 64`)
 NODE_ENV=development
-\`\`\`
+```
 
 ### 5. Entwicklungsserver starten
 
 Um die Anwendung im Entwicklungsmodus zu starten, führen Sie den folgenden Befehl aus:
 
-\`\`\`bash
+```bash
 npm run dev
 # oder
 yarn dev
-\`\`\`
+```
 
 Die Anwendung ist nun unter `http://localhost:3000` erreichbar.
 
@@ -77,13 +77,13 @@ Die Anwendung ist nun unter `http://localhost:3000` erreichbar.
 
 Für den Einsatz in einer Produktionsumgebung müssen Sie die Anwendung zuerst bauen und dann starten:
 
-\`\`\`bash
+```bash
 # Projekt für Produktion bauen
 npm run build
 
 # Produktionsserver starten
 npm start
-\`\`\`
+```
 
 ## 📊 Datenbank-Setup über die Weboberfläche
 
@@ -141,7 +141,7 @@ Nach dem Ausführen der Seed-Daten (`02-seed-data.sql`):
 
 ## 🗂️ Projektstruktur
 
-\`\`\`
+```
 fivem-license-system/
 ├── app/                    # Next.js App Router
 │   ├── api/               # API Routes (inkl. Admin- und Lizenz-APIs)
@@ -158,7 +158,7 @@ fivem-license-system/
 ├── lib/                # Utility Funktionen (Datenbank, Auth, Utils)
 ├── scripts/            # SQL Skripte für Datenbank-Setup
 └── public/             # Statische Dateien
-\`\`\`
+```
 
 ## 🔧 Konfiguration
 
@@ -166,7 +166,7 @@ fivem-license-system/
 
 Die Datenbankverbindung ist in `lib/database.ts` konfiguriert. Sie können diese Datei bearbeiten, um Ihre Datenbank-Zugangsdaten anzupassen:
 
-\`\`\`typescript
+```typescript
 // lib/database.ts
 const dbConfig = {
   host: "127.0.0.1", // Ihre Datenbank-Host-IP oder Domain (niemals localhost verwenden)
@@ -176,7 +176,7 @@ const dbConfig = {
   database: "lic",   // Ihr Datenbank-Name
   charset: "utf8mb4",
 }
-\`\`\`
+```
 
 ### JWT-Konfiguration
 
