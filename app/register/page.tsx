@@ -1,0 +1,202 @@
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { motion } from "framer-motion"
+import { Eye, EyeOff, UserPlus } from "lucide-react"
+import { GlassCard } from "@/components/glass-card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { ThemeToggle } from "@/components/theme-toggle"
+
+export default function RegisterPage() {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  })
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError("")
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwörter stimmen nicht überein")
+      setLoading(false)
+      return
+    }
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+        }),
+      })
+
+      if (response.ok) {
+        const { token } = await response.json()
+        localStorage.setItem("token", token)
+        router.push("/dashboard")
+      } else {
+        const { error } = await response.json()
+        setError(error)
+      }
+    } catch (error) {
+      setError("Ein Fehler ist aufgetreten")
+    }
+    setLoading(false)
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }))
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 dark:from-black dark:via-gray-900 dark:to-black flex items-center justify-center p-6">
+      <div className="absolute top-6 right-6">
+        <ThemeToggle />
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md"
+      >
+        <GlassCard className="p-8">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center">
+              <UserPlus className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold mb-2">Konto erstellen</h1>
+            <p className="text-muted-foreground">Registrieren Sie sich für das FiveM License System</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="username">Benutzername</Label>
+              <Input
+                id="username"
+                name="username"
+                type="text"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Wählen Sie einen Benutzernamen"
+                required
+                className="bg-white/10 dark:bg-black/20 backdrop-blur-xl border-white/20 dark:border-white/10"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">E-Mail</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="ihre@email.de"
+                required
+                className="bg-white/10 dark:bg-black/20 backdrop-blur-xl border-white/20 dark:border-white/10"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">Passwort</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Mindestens 6 Zeichen"
+                  required
+                  className="bg-white/10 dark:bg-black/20 backdrop-blur-xl border-white/20 dark:border-white/10 pr-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Passwort bestätigen</Label>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Passwort wiederholen"
+                required
+                className="bg-white/10 dark:bg-black/20 backdrop-blur-xl border-white/20 dark:border-white/10"
+              />
+            </div>
+
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 text-sm"
+              >
+                {error}
+              </motion.div>
+            )}
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white"
+            >
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Registrieren...
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <UserPlus className="w-4 h-4" />
+                  Registrieren
+                </div>
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              Bereits ein Konto?{" "}
+              <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium">
+                Jetzt anmelden
+              </Link>
+            </p>
+          </div>
+        </GlassCard>
+      </motion.div>
+    </div>
+  )
+}
